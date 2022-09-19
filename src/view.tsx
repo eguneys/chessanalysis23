@@ -18,7 +18,7 @@ const Chessanalysis23 = props => {
       </div>
       <div class='ca-side'>
       <div class='replay-wrap'>
-      <Chessreplay23 fen={ctrl.replay_fen}/>
+      <Chessreplay23 moves={ctrl.replay_fen}/>
       </div>
       </div>
     </div>

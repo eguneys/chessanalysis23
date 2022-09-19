@@ -4,6 +4,7 @@ specifiers:
   babel-preset-solid: ^1.5.5
   chessboard23: link:../chessboard23
   chessreplay23: link:../chessreplay23
+  lchessanalysis: link:../lchessanalysis
   solid-js: ^1.5.5
   solid-play: link:../solid-play
   typescript: ^4.6.4
@@ -13,6 +14,7 @@ specifiers:
 dependencies:
   chessboard23: link:../chessboard23
   chessreplay23: link:../chessreplay23
+  lchessanalysis: link:../lchessanalysis
   solid-js: 1.5.5
   solid-play: link:../solid-play
 

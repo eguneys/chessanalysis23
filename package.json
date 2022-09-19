@@ -19,6 +19,7 @@
     "solid-js": "^1.5.5",
     "solid-play": "link:../solid-play",
     "chessboard23": "link:../chessboard23",
-    "chessreplay23": "link:../chessreplay23"
+    "chessreplay23": "link:../chessreplay23",
+    "lchessanalysis": "link:../lchessanalysis"
   }
 }
