@@ -1,0 +1,29 @@
+.chessanalysis23 {
+  position: absolute;
+  width: 100%;
+  display: flex;
+  flex-flow: row;
+  gap: 0.3em;
+}
+
+.ca-main {
+  flex: 2 0 0;
+}
+
+
+.ca-side {
+  flex: 1.5 0 0;
+}
+
+
+.board-wrap,
+.replay-wrap {
+  position: relative;
+}
+
+
+.board-wrap {
+  margin: auto;
+  max-width: 100vh;
+  aspect-ratio: 1/1;
+}
