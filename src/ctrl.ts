@@ -7,12 +7,13 @@ import { m_log } from 'solid-play'
 import { IsoSituation, match_idea } from 'lchessanalysis'
 
 const default_puzzle = {
-  "id": "01Vbe",
-  "fen": "2r5/3Qnk1p/8/4B2b/Pp2p3/1P2P3/5PPP/3R2K1 w - - 3 32",
-  "moves": "d1d6 c8c1 d6d1 c1d1 d7d1 h5d1",
-  "tags": "advantage endgame fork long",
-  "link": "https://lichess.org/b334W1Ga#63"
+  "id": "00Ec4",
+  "fen": "2rq1r1k/p5pp/8/1p1BpPb1/2Pp2Q1/P2P2R1/6PP/R5K1 b - - 3 25",
+  "moves": "c8c7 g4g5 d8g5 g3g5",
+  "tags": "crushing middlegame short",
+  "link": "https://lichess.org/HUFGdjKK/black#50"
 }
+
 
 const getPuzzles = () => {
   return fetch('data/athousand_sorted.csv')
@@ -30,6 +31,30 @@ const getPuzzles = () => {
 }
 
 
+const puzzle_match_idea = (i, _) => {
+  let { fen, moves } = _
+  let [move0, ..._moves] = moves.split(' ')
+
+  let s = MobileSituation.from_fen(fen).od(move0)[0]
+  let iso = IsoSituation.from_fen(s.fen)
+  return match_idea(iso, s, i)
+}
+
+
+let i = [
+  ['q', 'f', 'K'],
+]
+
+
+function playMoves(situation: MobileSituation, moves: Array<OD>) {
+  let move = moves.shift()
+
+  if (move) {
+    return playMoves(situation.od(move)[0], moves)
+  }
+  return situation
+}
+
 export default class _Chessanalysis23 {
 
   get board_fen() {
@@ -42,26 +67,18 @@ export default class _Chessanalysis23 {
 
   onScroll() { }
 
+  on_hover(_) {
+    this.m_analysis.on_hover(_)
+  }
+
   constructor() {
 
     let r_puzzles = createResource(getPuzzles)
     this.m_puzzles = createMemo(() => {
       let puzzles = read(r_puzzles)
 
-      let i = [
-        ['Q', 'R', 'p'],
-      ]
 
-      return puzzles?.slice(0, 20).filter(_ => {
-        let { fen, moves } = _
-        let [move0, ..._moves] = moves.split(' ')
-
-        let s = MobileSituation.from_fen(fen).od(move0)[0]
-        let iso = IsoSituation.from_fen(s.fen)
-        return match_idea(iso, s, i)[3]
-      })
-
-
+      return puzzles?.slice(0, 100).filter(_ => puzzle_match_idea(i, _).length > 0)
     })
 
     this.m_analysis = make_analysis(this)
@@ -74,14 +91,26 @@ export type Analysis = _Chessanalysis23
 
 const make_analysis = (analysis: Analysis) => {
 
-  let m_puzzle = createMemo(() => analysis.m_puzzles()?.[0] || default_puzzle)
+  let _i = createSignal(3)
+  let m_c = createMemo(() => analysis.m_puzzles()?.length)
+
+  let m_text = createMemo(() => `${(read(_i) + 1)}/${m_c()}`)
+
+  let m_puzzle = createMemo(() => analysis.m_puzzles()?.[read(_i)] || default_puzzle)
+
+
+  let m_match = createMemo(() => puzzle_match_idea(i, m_puzzle()))
+
+  let _preferred_orientation = createSignal('w')
 
   let m_fen = createMemo(() => m_puzzle().fen)
   let m_moves = createMemo(() => m_puzzle().moves)
 
-  let m_situation = createMemo(() => MobileSituation.from_fen(m_fen())),
+  let _moves_after_fen = createSignal([])
+
+  let m_situation = createMemo(() => playMoves(MobileSituation.from_fen(m_fen()), read(_moves_after_fen))),
     m_board = createMemo(() => m_situation().board),
-  m_orientation = createMemo(() => m_situation().turn)
+  m_orientation = createMemo(() => read(_preferred_orientation) ||  m_situation().turn)
 
   let m_checkerboard = createMemo(() => [
       ...dark_poss.map(_ => `dark@@${_}`), 
@@ -122,6 +151,22 @@ const make_analysis = (analysis: Analysis) => {
   })
 
   return {
+    on_hover(_) {
+      let replay = m_replay()
+      
+      if (replay && _) {
+        let moves = replay.follow_path(_).slice(1).map(_ => _.data.uci)
+        owrite(_moves_after_fen, moves)
+      }
+    },
+    set i(d: number) {
+      owrite(_moves_after_fen, [])
+      let c = m_c()
+      owrite(_i, _ => (_ + d + c) % c)
+    },
+    get text() {
+      return m_text()
+    },
     get board_fen() {
       return m_board_fen()
     },

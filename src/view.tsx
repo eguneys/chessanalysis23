@@ -17,8 +17,13 @@ const Chessanalysis23 = props => {
       </div>
       </div>
       <div class='ca-side'>
+      <div class='nav'>
+        <button onClick={() => ctrl.m_analysis.i = -1}>prev</button>
+        <span>{ctrl.m_analysis.text}</span>
+        <button onClick={() => ctrl.m_analysis.i = 1} >next</button>
+      </div>
       <div class='replay-wrap'>
-      <Chessreplay23 moves={ctrl.replay_fen}/>
+      <Chessreplay23 on_hover={_ => ctrl.on_hover(_)} moves={ctrl.replay_fen}/>
       </div>
       </div>
     </div>

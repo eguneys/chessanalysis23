@@ -16,10 +16,11 @@
     "vite-plugin-solid": "^2.3.3"
   },
   "dependencies": {
-    "solid-js": "^1.5.5",
-    "solid-play": "link:../solid-play",
     "chessboard23": "link:../chessboard23",
     "chessreplay23": "link:../chessreplay23",
-    "lchessanalysis": "link:../lchessanalysis"
+    "lchessanalysis": "link:../lchessanalysis",
+    "solid-devtools": "^0.16.2",
+    "solid-js": "^1.5.5",
+    "solid-play": "link:../solid-play"
   }
 }
