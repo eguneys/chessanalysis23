@@ -1,0 +1,21 @@
+.ceditor {
+  display: flex;
+  flex-flow: column;
+  user-select: none;
+  cursor: pointer;
+}
+
+
+.free-pieses {
+  flex: 1 0 0;
+  display: flex;
+}
+
+.free-pieses .piese {
+  flex: 1 0 0;
+  aspect-ratio: 1/1;
+  background-size: contain;
+}
+
+
+

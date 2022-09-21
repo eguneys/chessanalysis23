@@ -6,6 +6,8 @@ import { Replay, MobileSituation } from 'lchessanalysis'
 import { m_log } from 'solid-play'
 import { IsoSituation, match_idea } from 'lchessanalysis'
 
+const s_fen = fen => MobileSituation.from_fen(fen)
+
 const default_puzzle = {
   "id": "00Ec4",
   "fen": "2rq1r1k/p5pp/8/1p1BpPb1/2Pp2Q1/P2P2R1/6PP/R5K1 b - - 3 25",
@@ -44,22 +46,48 @@ const fen_match_idea = (i, fen) => {
   return match_idea(iso, s, i)
 }
 
+const fen_move_idea = (i, m, fen) => {
+  let _ = fen_match_idea(i, fen)[0]
 
-let i0 = [
-  ['r', 'f0'],
-  ['q', 'f0', 'K'],
-  ['K', 'f0']
-]
+  if (!_) {
+    return []
+  }
+
+  return m.map(m => m.map(rB => {
+    let [o, d] = rB.split('-')
+    if (!d) {
+      [o, d] = rB.split('')
+    }
+
+    return _[o] + _[d]
+  }).join(' '))
+}
 
 let i = [
+  ['r', 'B'],
+  ['R', 'B'],
+  ['R', 'R2'],
+  ['q', 'R2', 'R'],
+  ['R', 'K'],
+  ['n', 'B', 'Q'],
+  ['n', 'B', 'K'],
+  ['P', 'B']
+]
+
+let m = [
+  ['rB', 'RB', 'q-R2'],
+  ['rB', 'PB', 'nB', 'RB', 'q-R2']
+]
+
+
+i = [
   ['q', 'f0', 'K'],
 ]
 
-
-let ii = [
-  ['Q', 'k'],
-  ['k', 'f0']
+m = [
+  ['q-f0']
 ]
+
 
 
 
@@ -92,6 +120,7 @@ const make_replay_fen = _ => {
     return [path, _uci].join(' ')
   })
 }
+
 
 export default class _Chessanalysis23 {
 
@@ -160,15 +189,7 @@ const make_analysis = (analysis: Analysis) => {
 
     let fen1 = playMoves(MobileSituation.from_fen(fen), [move0]).fen
 
-    let _ = fen_match_idea(i, fen1)
-
-    return _.map(({ q, f0, K }) => q+f0).flatMap(od => {
-      let fen2 = playMoves(MobileSituation.from_fen(fen1), [od]).fen
-
-      let __ = fen_match_idea(ii, fen2)
-
-      return __.map(({ k, f0 }) => [move0, od, k + f0].join(' '))
-    })
+    return fen_move_idea(i, m, fen1).map(_ => [move0, _].join(' '))
   })
 
 

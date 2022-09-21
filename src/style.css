@@ -1,6 +1,42 @@
 .chessanalysis23 {
   position: absolute;
   width: 100%;
+}
+
+.ca-side {
+  display: flex;
+  flex-flow: column;
+}
+
+.ca-side .nav {
+}
+
+.ca-side .replay-wrap {
+  flex: 3 0 0;
+}
+
+.ca-side .editor-wrap {
+  flex: 1 0 0;
+}
+
+.ca-side .editor-wrap {
+  display: flex;
+  flex-flow: row;
+}
+
+.ca-side .editor-wrap .editor-side {
+  flex: 2 0 0;
+}
+
+.ceditor {
+  flex: 3 0 0;
+}
+
+.ce-board {
+  flex: 1 0 0;
+}
+
+.ca-wrap {
   display: flex;
   flex-flow: row;
   gap: 0.3em;

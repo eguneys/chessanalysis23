@@ -1,5 +1,6 @@
 import './theme.css'
 import './style.css'
+import './editor.css'
 import { render } from 'solid-js/web'
 import App from './main-app'
 
