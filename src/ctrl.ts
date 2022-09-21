@@ -1,4 +1,4 @@
-import { createResource, createMemo, createSignal } from 'solid-js'
+import { createEffect, createResource, createMemo, createSignal } from 'solid-js'
 import { initial_fen, dark_poss, light_poss } from 'solid-play'
 import { make_ref } from 'solid-play'
 import { read, write, owrite } from 'solid-play'
@@ -35,15 +35,32 @@ const puzzle_match_idea = (i, _) => {
   let { fen, moves } = _
   let [move0, ..._moves] = moves.split(' ')
 
-  let s = MobileSituation.from_fen(fen).od(move0)[0]
+  return fen_match_idea(i, MobileSituation.from_fen(fen).od(move0)[0].fen)
+}
+
+const fen_match_idea = (i, fen) => {
+  let s = MobileSituation.from_fen(fen)
   let iso = IsoSituation.from_fen(s.fen)
   return match_idea(iso, s, i)
 }
 
 
-let i = [
-  ['q', 'f', 'K'],
+let i0 = [
+  ['r', 'f0'],
+  ['q', 'f0', 'K'],
+  ['K', 'f0']
 ]
+
+let i = [
+  ['q', 'f0', 'K'],
+]
+
+
+let ii = [
+  ['Q', 'k'],
+  ['k', 'f0']
+]
+
 
 
 function playMoves(situation: MobileSituation, moves: Array<OD>) {
@@ -53,6 +70,27 @@ function playMoves(situation: MobileSituation, moves: Array<OD>) {
     return playMoves(situation.od(move)[0], moves)
   }
   return situation
+}
+
+const make_replay_fen = _ => {
+
+  let [fen, moves] = _.split('\n\n')
+
+  if (moves === '') {
+    return []
+  }
+
+  let __ = moves.split('\n')
+
+  return __.map(_ => {
+    let [path, data] = _.split('___')
+
+    let [,_data] = data.match(/\{(.*)\}/)
+
+    let [_uci] = _data.split(' ')
+
+    return [path, _uci].join(' ')
+  })
 }
 
 export default class _Chessanalysis23 {
@@ -65,10 +103,14 @@ export default class _Chessanalysis23 {
     return this.m_analysis.replay_fen
   }
 
+  get replay_fen2() {
+    return this.m_analysis.replay_fen2
+  }
+
   onScroll() { }
 
-  on_hover(_) {
-    this.m_analysis.on_hover(_)
+  on_hover(_, __) {
+    this.m_analysis.on_hover(_, __)
   }
 
   constructor() {
@@ -77,8 +119,9 @@ export default class _Chessanalysis23 {
     this.m_puzzles = createMemo(() => {
       let puzzles = read(r_puzzles)
 
+      puzzles?.reverse()
 
-      return puzzles?.slice(0, 100).filter(_ => puzzle_match_idea(i, _).length > 0)
+      return puzzles?.slice(25, 200).filter(_ => puzzle_match_idea(i, _).length > 0)
     })
 
     this.m_analysis = make_analysis(this)
@@ -91,7 +134,7 @@ export type Analysis = _Chessanalysis23
 
 const make_analysis = (analysis: Analysis) => {
 
-  let _i = createSignal(3)
+  let _i = createSignal(0)
   let m_c = createMemo(() => analysis.m_puzzles()?.length)
 
   let m_text = createMemo(() => `${(read(_i) + 1)}/${m_c()}`)
@@ -100,11 +143,43 @@ const make_analysis = (analysis: Analysis) => {
 
 
   let m_match = createMemo(() => puzzle_match_idea(i, m_puzzle()))
+  //m_log(m_puzzle)
+  //m_log(m_match)
 
   let _preferred_orientation = createSignal('w')
 
   let m_fen = createMemo(() => m_puzzle().fen)
+
   let m_moves = createMemo(() => m_puzzle().moves)
+
+  let m_matched_moves = createMemo(() => {
+    let fen = m_fen()
+    let moves = m_moves()
+
+    let [move0] = moves.split(' ')
+
+    let fen1 = playMoves(MobileSituation.from_fen(fen), [move0]).fen
+
+    let _ = fen_match_idea(i, fen1)
+
+    return _.map(({ q, f0, K }) => q+f0).flatMap(od => {
+      let fen2 = playMoves(MobileSituation.from_fen(fen1), [od]).fen
+
+      let __ = fen_match_idea(ii, fen2)
+
+      return __.map(({ k, f0 }) => [move0, od, k + f0].join(' '))
+    })
+  })
+
+
+  let m_replay2 = createMemo(() => {
+    let fen = m_fen(),
+      movess = m_matched_moves()
+
+    let _ = Replay.from_fen(fen)
+    movess.forEach(moves => _.play_ucis(moves))
+    return _
+  })
 
   let _moves_after_fen = createSignal([])
 
@@ -132,27 +207,12 @@ const make_analysis = (analysis: Analysis) => {
     return _
   })
 
-  let m_replay_fen = createMemo(() => {
-    let _ = m_replay().replay
-
-    let [fen, moves] = _.split('\n\n')
-
-    let __ = moves.split('\n')
-
-    return __.map(_ => {
-      let [path, data] = _.split('___')
-
-      let [,_data] = data.match(/\{(.*)\}/)
-
-      let [_uci] = _data.split(' ')
-
-      return [path, _uci].join(' ')
-    })
-  })
+  let m_replay_fen = createMemo(() => make_replay_fen(m_replay().replay))
+  let m_replay_fen2 = createMemo(() => make_replay_fen(m_replay2().replay))
 
   return {
-    on_hover(_) {
-      let replay = m_replay()
+    on_hover(_, o) {
+      let replay = o ? m_replay2() : m_replay()
       
       if (replay && _) {
         let moves = replay.follow_path(_).slice(1).map(_ => _.data.uci)
@@ -172,6 +232,9 @@ const make_analysis = (analysis: Analysis) => {
     },
     get replay_fen() {
       return m_replay_fen()
+    },
+    get replay_fen2() {
+      return m_replay_fen2()
     }
   }
 }

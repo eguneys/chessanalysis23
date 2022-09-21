@@ -24,6 +24,7 @@ const Chessanalysis23 = props => {
       </div>
       <div class='replay-wrap'>
       <Chessreplay23 on_hover={_ => ctrl.on_hover(_)} moves={ctrl.replay_fen}/>
+      <Chessreplay23 on_hover={_ => ctrl.on_hover(_, true)} moves={ctrl.replay_fen2}/>
       </div>
       </div>
     </div>
