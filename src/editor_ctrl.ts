@@ -1,20 +1,31 @@
 import { initial_fen, dark_poss, light_poss } from 'solid-play'
+import { make_ref, make_drag_ref } from 'solid-play'
 
-let checkerboard = [
-  ...dark_poss.map(_ => `dark@@${_}`), 
-    ...light_poss.map(_ => `light@@${_}`)]
 
 export default class _Ce {
 
   get fen() {
-    return checkerboard.join(' ')
+    return 'b'
   }
 
-  select(piece) {
-    console.log(piece)
-  }
+  init() {
+    this.ref_free = make_ref()
 
-  constructor() {
+
+    make_drag_ref({
+      on_hover(e) {
+        console.log('hover')
+      },
+      on_drag(e) {
+        console.log('here')
+      },
+      on_up(e) {
+        console.log('up')
+      }
+    }, this.ref_free)
+
+
+    return this
   }
 }
 

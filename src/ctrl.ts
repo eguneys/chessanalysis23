@@ -208,16 +208,11 @@ const make_analysis = (analysis: Analysis) => {
     m_board = createMemo(() => m_situation().board),
   m_orientation = createMemo(() => read(_preferred_orientation) ||  m_situation().turn)
 
-  let m_checkerboard = createMemo(() => [
-      ...dark_poss.map(_ => `dark@@${_}`), 
-      ...light_poss.map(_ => `light@@${_}`)])
-
   let m_pieses = createMemo(() => m_board().pieses)
 
 
   let m_board_fen = createMemo(() => [m_orientation(), 
-                               ...m_pieses(), 
-  ...m_checkerboard()].join(' '))
+                               ...m_pieses()].join(' '))
 
   let m_replay = createMemo(() => {
     let fen = m_fen(),

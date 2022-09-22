@@ -20,6 +20,8 @@
 }
 
 .ca-side .editor-wrap {
+  user-select: none;
+  cursor: pointer;
   display: flex;
   flex-flow: row;
 }

@@ -1,3 +1,43 @@
+.chessboard {
+  background-image: url(pink-pyramid.png);
+  background-size: contain;
+  --md-coord-color-black:#ED7272;
+  --md-coord-color-white:#E8E9B7;
+}
+
+
+
+.white .files .file:nth-child(2n+1),
+.white .ranks .file:nth-child(2n),
+.black .files .file:nth-child(2n+1),
+.black .ranks .file:nth-child(2n) {
+  color: var(--md-coord-color-white);
+}
+
+.white .files .file:nth-child(2n),
+.white .ranks .file:nth-child(2n+1),
+.black .files .file:nth-child(2n),
+.black .ranks .file:nth-child(2n+1) {
+  color: var(--md-coord-color-black);
+}
+
+
+.white .files .rank:nth-child(2n+1),
+.white .ranks .rank:nth-child(2n),
+.black .files .rank:nth-child(2n+1),
+.black .ranks .rank:nth-child(2n) {
+  color: var(--md-coord-color-black);
+}
+
+.white .files .rank:nth-child(2n),
+.white .ranks .rank:nth-child(2n+1),
+.black .files .rank:nth-child(2n),
+.black .ranks .rank:nth-child(2n+1) {
+  color: var(--md-coord-color-white);
+}
+
+
+
 .dark {
   background: #a1c298;
   opacity: 0.9;
