@@ -8,8 +8,6 @@ const Chessanalysis23 = props => {
 
   let ctrl = new _Chessanalysis23()
 
-  onScrollHandlers(ctrl)
-
   return (<>
     <div class='chessanalysis23'>
       <div class='ca-wrap'>

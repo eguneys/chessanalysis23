@@ -3,7 +3,6 @@
   position: absolute;
   width: 100%;
   aspect-ratio: 1/1;
-  overflow: hidden;
 }
 
 .squares,
@@ -28,9 +27,8 @@
   background-size: cover;
 }
 
-
 .squares .square {
-  border-radius: 1px;
+  border-radius: 8px;
 }
 
 
