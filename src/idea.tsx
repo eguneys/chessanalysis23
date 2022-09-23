@@ -11,7 +11,13 @@ const Idea = props => {
         <Ce onChange={_ => ctrl.e_change(_)}/>
       </div>
       <div class='editor-side'>
-        
+        <div class='vert-pieses'>
+          <For each={ctrl.pieses}>{ piese =>
+            <div class="tab">
+              <div class={piese.klass}/>
+            </div>
+          }</For>
+        </div>
       </div>
     </div>
    </>)

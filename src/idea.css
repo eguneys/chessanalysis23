@@ -4,6 +4,7 @@
 }
 
 .cidea .editor-side {
+  display: flex;
   flex: 1 0 0;
 }
 
@@ -12,4 +13,23 @@
   user-select: none;
   cursor: pointer;
 }
+
+
+.vert-pieses {
+  flex: 1 0 0;
+  display: flex;
+  flex-flow: column;
+}
+
+.vert-pieses .tab {
+  flex: 1 0 0;
+}
+
+.vert-pieses .piese {
+  aspect-ratio: 1/1;
+  background-size: cover;
+  pointer-events: none;
+}
+
+
 
