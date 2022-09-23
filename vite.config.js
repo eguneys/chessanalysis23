@@ -9,8 +9,8 @@ export default defineConfig({
   build: {
     lib: {
       entry: resolve(__dirname, 'src/index.ts'),
-      name: 'Chessboard23',
-      fileName: 'chessboard23'
+      name: 'Chessanalysis23',
+      fileName: 'chessanalysis23'
     },
     rollupOptions: {
       external: ['solid-js', 'solid-play']
