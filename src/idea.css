@@ -9,6 +9,7 @@
 }
 
 .cidea .editor-wrap {
+  position: relative;
   flex: 2 0 0;
   user-select: none;
   cursor: pointer;

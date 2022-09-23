@@ -8,19 +8,6 @@
   flex-flow: column;
 }
 
-.ca-side .nav {
-}
-
-.ca-side .replay-wrap {
-  flex: 3 0 0;
-}
-
-.ca-side .idea-wrap {
-  flex: 1 0 0;
-}
-
-
-
 .ca-wrap {
   display: flex;
   flex-flow: row;

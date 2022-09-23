@@ -1,4 +1,7 @@
 .ceditor {
+  aspect-ratio: 1/1;
+  width: 100%;
+  position: absolute;
   display: flex;
   flex-flow: column;
   user-select: none;
@@ -6,11 +9,9 @@
 }
 
 .ceditor .ce-board {
-  flex: 1 0 0;
 }
 
 .free-pieses {
-  flex: 1 0 0;
   display: flex;
 }
 
