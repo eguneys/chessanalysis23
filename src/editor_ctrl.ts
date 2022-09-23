@@ -1,4 +1,4 @@
-import { createSignal, createMemo } from 'solid-js'
+import { createEffect, createSignal, createMemo } from 'solid-js'
 import { colors, roles, initial_fen, dark_poss, light_poss } from 'solid-play'
 import { read, write, owrite } from 'solid-play'
 import { make_ref, make_drag_ref } from 'solid-play'
@@ -10,6 +10,10 @@ import { Shapes } from 'chessboard23'
 
 
 export default class _Ce {
+
+  get res() {
+    return this.m_res()
+  }
 
   get drag() {
     return this.m_drag()
@@ -34,6 +38,7 @@ export default class _Ce {
     let _board = createSignal(Board.empty)
     this.m_board = createMemo(() => read(_board))
 
+
     let ref_board = make_ref()
     this.ref_board = ref_board
 
@@ -57,7 +62,9 @@ export default class _Ce {
       }
     })
 
-
+    this.m_res = createMemo(() => 
+      [this.m_board().fen, read(this._shapes).fen].join('___')
+    )
 
     const on_drag = (e, e0) => {
       let e_board_pos = ref_board.get_normal_at_abs_pos(e.e).scale(8)

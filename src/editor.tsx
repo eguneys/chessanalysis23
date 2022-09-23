@@ -1,3 +1,4 @@
+import { createEffect } from 'solid-js'
 import { Chessboard23 } from 'chessboard23'
 import _Ce from './editor_ctrl'
 import { color_long, role_long } from 'solid-play'
@@ -6,6 +7,10 @@ import { onScrollHandlers, set_$ref } from 'solid-play'
 const Ce = props => {
 
   let ctrl = new _Ce().init()
+
+    createEffect(() => {
+      props.onChange?.(ctrl.res)
+        })
 
   onScrollHandlers(ctrl)
 

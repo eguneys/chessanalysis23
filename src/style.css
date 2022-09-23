@@ -15,28 +15,11 @@
   flex: 3 0 0;
 }
 
-.ca-side .editor-wrap {
+.ca-side .idea-wrap {
   flex: 1 0 0;
 }
 
-.ca-side .editor-wrap {
-  user-select: none;
-  cursor: pointer;
-  display: flex;
-  flex-flow: row;
-}
 
-.ca-side .editor-wrap .editor-side {
-  flex: 2 0 0;
-}
-
-.ceditor {
-  flex: 3 0 0;
-}
-
-.ce-board {
-  flex: 1 0 0;
-}
 
 .ca-wrap {
   display: flex;

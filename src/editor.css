@@ -5,6 +5,9 @@
   cursor: pointer;
 }
 
+.ceditor .ce-board {
+  flex: 1 0 0;
+}
 
 .free-pieses {
   flex: 1 0 0;

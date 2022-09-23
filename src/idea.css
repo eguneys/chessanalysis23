@@ -1,0 +1,15 @@
+.cidea {
+  display: flex;
+  flex-flow: row;
+}
+
+.cidea .editor-side {
+  flex: 1 0 0;
+}
+
+.cidea .editor-wrap {
+  flex: 2 0 0;
+  user-select: none;
+  cursor: pointer;
+}
+

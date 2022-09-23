@@ -1,8 +1,7 @@
 import _Chessanalysis23 from './ctrl'
 import {Chessboard23 } from 'chessboard23'
 import Chessreplay23 from 'chessreplay23'
-import { onScrollHandlers } from 'solid-play'
-import Ce from './editor'
+import Idea from './idea'
 
 const Chessanalysis23 = props => {
 
@@ -26,10 +25,8 @@ const Chessanalysis23 = props => {
             <Chessreplay23 on_hover={_ => ctrl.on_hover(_)} moves={ctrl.replay_fen}/>
             <Chessreplay23 on_hover={_ => ctrl.on_hover(_, true)} moves={ctrl.replay_fen2}/>
           </div>
-          <div class='editor-wrap'>
-            <Ce ctrl={ctrl}/>
-            <div class='editor-side'>
-            </div>
+          <div class='idea-wrap'>
+            <Idea/>
           </div>
         </div>
       </div>
