@@ -1,5 +1,5 @@
 import _Chessanalysis23 from './ctrl'
-import Chessboard23 from 'chessboard23'
+import {Chessboard23 } from 'chessboard23'
 import Chessreplay23 from 'chessreplay23'
 import { onScrollHandlers } from 'solid-play'
 import Ce from './editor'
