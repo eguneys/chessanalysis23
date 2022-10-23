@@ -1,11 +1,8 @@
-import './theme.css'
 import './style.css'
-import './editor.css'
-import './idea.css'
 import { render } from 'solid-js/web'
 import App from './main-app'
 
-function app(element: HTMLElement) {
+const app = (element: HTMLElement) => {
   render(App, element)
 }
 

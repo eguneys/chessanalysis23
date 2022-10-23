@@ -11,13 +11,13 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "noEmit": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
     "noImplicitReturns": true,
     "skipLibCheck": true,
     "jsx": "preserve",
     "jsxImportSource": "solid-js",
-    "types": ["solid-js"]
+    "types": ["solid-js"],
+    "declaration": true,
+    "outDir": "dist"
   },
   "include": ["src"]
 }
