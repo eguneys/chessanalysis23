@@ -13,8 +13,16 @@ const Chessanalysis23: Component<{}> = props => {
         <Chessboard23 fen={ctrl.fen} shapes={''} drag={''}/>
       </div>
 
-      <div class='replay-wrap'>
-        <Chessreplay23 on_hover={_ => {}} moves={[]}/>
+      <div class='side'>
+        <div class='navigation'>
+          <button onClick={_ => ctrl._select.i_current_puzzle = -1}>prev</button>
+          <span>{ctrl._select.i_current_puzzle}/</span>
+          <span>{ctrl._select.nb_puzzles}</span>
+          <button onClick={_ => ctrl._select.i_current_puzzle = 1}>next</button>
+        </div>
+        <div class='replay-wrap'>
+          <Chessreplay23 on_hover={_ => ctrl._select.on_hover(_)} moves={ctrl._select.current_replay_fen}/>
+        </div>
       </div>
     </div>
     </>)
