@@ -70,6 +70,9 @@ export class _Chessanalysis23 {
 
   _select: PuzzleSelect
 
+  toggle_ideas_mode() {
+  }
+
   constructor() {
     this._select = new PuzzleSelect()
   }

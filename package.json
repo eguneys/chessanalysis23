@@ -19,6 +19,7 @@
   "dependencies": {
     "chessboard23": "link:../chessboard23",
     "chessreplay23": "link:../chessreplay23",
+    "chessidea23": "link:../chessidea23",
     "lchessanalysis": "link:../lchessanalysis",
     "solid-devtools": "^0.16.2",
     "solid-js": "^1.5.5",

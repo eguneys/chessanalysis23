@@ -1,0 +1,41 @@
+.chessidea23 {
+  display: flex;
+  user-select: none;
+  cursor: pointer;
+}
+
+.editor {
+  position: relative;
+  flex: 2;
+  display: flex;
+  flex-flow: column;
+}
+
+.board-wrap {
+  position: relative;
+  aspect-ratio: 1/1;
+}
+
+.free-pieses {
+  position: relative;
+  display: flex;
+}
+
+
+.free-pieses .piese {
+  flex: 1 0 0;
+  aspect-ratio: 1/1;
+  background-size: cover;
+  pointer-events: none;
+}
+
+.free-pieses .selectable-piese {
+  flex: 1 0 0;
+  aspect-ratio: 1/1;
+  background-size: cover;
+}
+
+.free-pieses .selectable-piese.active {
+  background: yellow;
+}
+

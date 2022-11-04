@@ -3,6 +3,7 @@ lockfileVersion: 5.4
 specifiers:
   babel-preset-solid: ^1.5.5
   chessboard23: link:../chessboard23
+  chessidea23: link:../chessidea23
   chessreplay23: link:../chessreplay23
   lchessanalysis: link:../lchessanalysis
   solid-devtools: ^0.16.2
@@ -14,6 +15,7 @@ specifiers:
 
 dependencies:
   chessboard23: link:../chessboard23
+  chessidea23: link:../chessidea23
   chessreplay23: link:../chessreplay23
   lchessanalysis: link:../lchessanalysis
   solid-devtools: 0.16.2_5chebdaipf2ngui37yw52hz6ju
