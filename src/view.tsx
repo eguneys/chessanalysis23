@@ -12,29 +12,11 @@ const Chessanalysis23: Component<{}> = props => {
     <div class='chessanalysis23'>
       <h3> Ideas </h3>
       <div class='ideas'>
-        <div class='idea-wrap'>
-        </div>
       </div>
       <h3> Puzzles </h3>
-      <div class='puzzles'>
-        <div class='board-wrap'>
-          <Chessboard23 fen={ctrl.fen} shapes={''} drag={''}/>
-        </div>
-
-        <div class='side'>
-          <div class='navigation'>
-            <button onClick={_ => ctrl._select.i_current_puzzle = -1}>prev</button>
-            <span>{ctrl._select.i_current_puzzle}/</span>
-            <span>{ctrl._select.nb_puzzles}</span>
-            <button onClick={_ => ctrl._select.i_current_puzzle = 1}>next</button>
-          </div>
-          <div class='replay-wrap'>
-            <Chessreplay23 on_hover={_ => ctrl._select.on_hover(_)} moves={ctrl._select.current_replay_fen}/>
-          </div>
-        </div>
-      </div>
+      <div class='puzzles'> </div>
     </div>
-    </>)
+  </>)
 }
 
 
