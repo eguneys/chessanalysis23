@@ -42,12 +42,36 @@
    color: #bababa;
 }
 
-.moves .move.hi {
-  background: #505089;
+
+.moves .move.on_hi_sub {
   color: white;
-  border-radius: 4px;
+  box-shadow: 0px 1px 0 0 hsla(0, 70%, 70%, 0.2);
 }
 
+.moves .move.on_hi {
+  background: hsla(30, 20%, 50%, 0.4);
+  color: white;
+  border-radius: 2px;
+}
+
+.moves .move.on_hi .index {
+  color: white;
+}
+.moves .move.hi .index {
+  color: white;
+}
+
+
+.moves .move.hi_sub {
+  color: white;
+  box-shadow: 0px 1px 0 0 hsla(0, 80%, 80%, 0.8);
+}
+
+.moves .move.hi {
+  background: hsla(30, 50%, 50%, 1);
+  color: white;
+  border-radius: 1px;
+}
 .moves .move .index {
   display: inline;
   padding-right: 0.2em;

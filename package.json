@@ -21,6 +21,7 @@
     "chessreplay23": "link:../chessreplay23",
     "chessidea23": "link:../chessidea23",
     "lchessanalysis": "link:../lchessanalysis",
+    "solid-ui": "link:../solid-ui",
     "solid-devtools": "^0.16.2",
     "solid-js": "^1.5.5",
     "solid-play": "link:../solid-play"

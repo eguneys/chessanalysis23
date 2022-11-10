@@ -9,6 +9,7 @@ specifiers:
   solid-devtools: ^0.16.2
   solid-js: ^1.5.5
   solid-play: link:../solid-play
+  solid-ui: link:../solid-ui
   typescript: ^4.6.4
   vite: ^3.1.0
   vite-plugin-solid: ^2.3.3
@@ -21,6 +22,7 @@ dependencies:
   solid-devtools: 0.16.2_5chebdaipf2ngui37yw52hz6ju
   solid-js: 1.5.5
   solid-play: link:../solid-play
+  solid-ui: link:../solid-ui
 
 devDependencies:
   babel-preset-solid: 1.5.5

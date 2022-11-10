@@ -17,17 +17,14 @@ h3 {
 
 .idea-wrap {
   width: 300px;
-  height: 50vh;
 }
 
 .board-wrap {
   position: relative;
   width: 300px;
-  height: 50vh;
 }
 
 .replay-wrap {
   position: relative;
   width: 300px;
-  height: 300px;
 }

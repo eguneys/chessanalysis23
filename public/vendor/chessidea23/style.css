@@ -16,6 +16,15 @@
   aspect-ratio: 1/1;
 }
 
+.chessreplay {
+  padding: 0.5em;
+  box-sizing: border-box;
+}
+
+.chessboard .pieses .piese.ghost {
+  opacity: 0.6;
+}
+
 .free-pieses {
   position: relative;
   display: flex;
