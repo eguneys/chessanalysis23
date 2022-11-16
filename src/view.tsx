@@ -5,10 +5,12 @@ import { Chessidea23, Chessideareplay23 } from 'chessidea23'
 import { _Chessanalysis23 } from './ctrl'
 import { Tab, TabPanel, Tabs } from 'solid-ui'
 import { FlatDoc } from 'lchessanalysis'
+import { Puzzles } from './puzzles'
 
 const Chessanalysis23: Component<{}> = props => {
 
   let ctrl = new _Chessanalysis23()
+  let puzzles = new Puzzles()
 
   return (<>
     <div class='chessanalysis23'>
@@ -26,7 +28,14 @@ const Chessanalysis23: Component<{}> = props => {
         </Tabs>
       </div>
       <h3> Puzzles </h3>
-      <div class='puzzles'> </div>
+      <div class='puzzles'> 
+          <div class='buttons'>
+            <button onClick={() => puzzles.i_current_puzzle = -1 }>prev</button>
+            {puzzles.puzzle_text}
+            <button onClick={() => puzzles.i_current_puzzle = 1 }>next</button>
+          </div>
+          <Chessideareplay23 on_nodes={_ => {}} shapes={""} nodes={puzzles.nodes} path={puzzles.path}/>
+      </div>
     </div>
   </>)
 }

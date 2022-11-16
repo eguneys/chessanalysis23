@@ -13,6 +13,11 @@ h3 {
 
 .puzzles {
   display: flex;
+  flex-flow: column;
+}
+
+.puzzles .buttons {
+  align-self: flex-end;
 }
 
 .idea-wrap {
