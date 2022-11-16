@@ -3,6 +3,8 @@ import { MobileSituation, Board, initial_fen } from 'lchessanalysis'
 import { Shapes } from 'chessboard23'
 import { Memo, m_log, mread, read, write, owrite } from 'solid-play'
 import { Path, UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
+import { Rules } from 'chessidea23'
+import { IsoSituation, match_idea, Idea } from 'lchessanalysis'
 
 export type Puzzle = {
   id: string,
@@ -37,6 +39,14 @@ const getPuzzles = () => {
 
 export class Puzzles {
 
+  set node_rules(_: FlatDoc) {
+    owrite(this._node_rules, _)
+  }
+
+  set rules(_: Rules) {
+    owrite(this._rules, _)
+  }
+
   get puzzle_text() {
     return `${read(this._i_current_puzzle) + 1}/${this.m_puzzles().length}`
   }
@@ -50,11 +60,20 @@ export class Puzzles {
     return this.m_path()
   }
 
+  set path(path: Path | '') {
+  }
+
   set i_current_puzzle(dt: number) {
     let pz = this.m_puzzles()
     owrite(this._i_current_puzzle, _ => (_ + dt + pz.length) % pz.length)
   }
 
+  match() {
+    owrite(this._match_now, undefined)
+  }
+
+  _node_rules: Signal<FlatDoc>
+  _rules: Signal<Rules>
   m_path: Memo<Path | ''>
   m_root: Memo<Node>
 
@@ -62,7 +81,37 @@ export class Puzzles {
   _i_current_puzzle: Signal<number>
   m_current_puzzle: Memo<Puzzle>
 
+  _match_now: Signal<undefined>
+
   constructor() {
+
+    this._match_now = createSignal(undefined, { equals: false })
+
+    let _node_rules: Signal<FlatDoc> = createSignal(FlatTree.apply(Node.make_root(initial_fen)))
+    this._node_rules = _node_rules
+
+    let _rules: Signal<Rules> = createSignal(['', new Map<string, string>()])
+    this._rules = _rules
+
+    let m_rules = createMemo(() => {
+      return read(_rules)[0].trim()
+      .split('\n')
+      .filter(_ => _ !== '')
+      .map(_ => _.split('->').map(_ =>
+        _.replace('wk', 'k')
+        .replace('wq', 'q')
+        .replace('wn', 'n')
+        .replace('wb', 'b')
+        .replace('wr', 'r')
+        .replace('wp', 'p')
+        .replace('bk', 'K')
+        .replace('bq', 'Q')
+        .replace('bn', 'N')
+        .replace('bb', 'B')
+        .replace('br', 'R')
+        .replace('bp', 'P')
+      ))
+    })
 
     let r_puzzles = createResource(getPuzzles)
 
@@ -84,5 +133,19 @@ export class Puzzles {
       this.m_root()
       return ''
     })
+
+
+    let m_node_fen = createMemo(() => this.m_root().children[0].fen)
+    let m_match = () => match_idea(IsoSituation.from_fen(m_node_fen()), MobileSituation.from_fen(m_node_fen()), m_rules())
+
+    createEffect(() => {
+      read(this._match_now)
+      untrack(() => {
+        console.log(m_rules())
+        console.log(m_node_fen())
+        console.log(m_match())
+      })
+    })
+
   }
 }

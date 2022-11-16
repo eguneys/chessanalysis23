@@ -20,10 +20,10 @@ const Chessanalysis23: Component<{}> = props => {
           <Tab>Idea</Tab>
           <Tab>Move</Tab>
           <TabPanel>
-            <Chessidea23 fen={ctrl._idea_fen} on_fen={_ => ctrl._idea_fen = _}/>
+            <Chessidea23 on_rules={_ => puzzles.rules = _} fen={ctrl._idea_fen} on_fen={_ => ctrl._idea_fen = _}/>
           </TabPanel>
           <TabPanel>
-            <Chessideareplay23 on_nodes={(_: FlatDoc) => ctrl.on_nodes(_)} shapes={ctrl._replay_shapes} nodes={ctrl.nodes} path={ctrl.path} />
+            <Chessideareplay23 on_path={_ => {}} on_nodes={_ => puzzles.node_rules = _} shapes={ctrl._replay_shapes} nodes={ctrl.nodes} path={ctrl.path} />
           </TabPanel>
         </Tabs>
       </div>
@@ -33,8 +33,9 @@ const Chessanalysis23: Component<{}> = props => {
             <button onClick={() => puzzles.i_current_puzzle = -1 }>prev</button>
             {puzzles.puzzle_text}
             <button onClick={() => puzzles.i_current_puzzle = 1 }>next</button>
+            <button onClick={() => puzzles.match()}>match</button>
           </div>
-          <Chessideareplay23 on_nodes={_ => {}} shapes={""} nodes={puzzles.nodes} path={puzzles.path}/>
+          <Chessideareplay23 on_path={_ => puzzles.path = _} on_nodes={_ => {}} shapes={""} nodes={puzzles.nodes} path={puzzles.path}/>
       </div>
     </div>
   </>)

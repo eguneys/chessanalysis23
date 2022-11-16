@@ -1,7 +1,7 @@
-import { createEffect, batch, untrack, Signal, createSignal } from 'solid-js'
+import { createMemo, createEffect, batch, untrack, Signal, createSignal } from 'solid-js'
 import { MobileSituation, Board, initial_fen } from 'lchessanalysis'
 import { Shapes } from 'chessboard23'
-import { m_log, read, write, owrite } from 'solid-play'
+import { Memo, m_log, read, write, owrite } from 'solid-play'
 import { Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
 
 export class _Chessanalysis23 {
@@ -29,16 +29,10 @@ export class _Chessanalysis23 {
   }
 
   get nodes() {
-    return untrack(() => {
-      return FlatTree.apply(read(this._root))
-    })
+    return FlatTree.apply(this.m_root())
   }
 
-  on_nodes(doc: FlatDoc) {
-    owrite(this._root, FlatTree.read(doc))
-  }
-
-  _root: Signal<Node>
+  m_root: Memo<Node>
 
   _initial_fen: Signal<Fen>
   _circles: Signal<Shapes>
@@ -46,12 +40,8 @@ export class _Chessanalysis23 {
   constructor() {
     this._circles = createSignal(Shapes.make())
     this._initial_fen = createSignal(empty_fen)
-    this._root = createSignal(TreeBuilder.apply(MobileSituation.from_fen(read(this._initial_fen)), []))
+    this.m_root = createMemo(() => TreeBuilder.apply(MobileSituation.from_fen(read(this._initial_fen)), []))
 
-    createEffect(() => {
-      owrite(this._root,
-             TreeBuilder.apply(MobileSituation.from_fen(read(this._initial_fen)), []))
-    })
   }
 
 }
