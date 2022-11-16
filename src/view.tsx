@@ -4,6 +4,7 @@ import Chessreplay23 from 'chessreplay23'
 import { Chessidea23, Chessideareplay23 } from 'chessidea23'
 import { _Chessanalysis23 } from './ctrl'
 import { Tab, TabPanel, Tabs } from 'solid-ui'
+import { FlatDoc } from 'lchessanalysis'
 
 const Chessanalysis23: Component<{}> = props => {
 
@@ -20,7 +21,7 @@ const Chessanalysis23: Component<{}> = props => {
             <Chessidea23 fen={ctrl._idea_fen} on_fen={_ => ctrl._idea_fen = _}/>
           </TabPanel>
           <TabPanel>
-            <Chessideareplay23 shapes={ctrl._replay_shapes} fen={ctrl._replay_fen} on_fen={_ => ctrl._replay_fen = _}/>
+            <Chessideareplay23 on_nodes={(_: FlatDoc) => ctrl.on_nodes(_)} shapes={ctrl._replay_shapes} nodes={ctrl.nodes} path={ctrl.path} />
           </TabPanel>
         </Tabs>
       </div>
