@@ -2,7 +2,7 @@ import { createResource, createMemo, createEffect, batch, untrack, Signal, creat
 import { MobileSituation, Board, initial_fen } from 'lchessanalysis'
 import { Shapes } from 'chessboard23'
 import { Memo, m_log, mread, read, write, owrite } from 'solid-play'
-import { UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
+import { Path, UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
 
 export type Puzzle = {
   id: string,
@@ -47,7 +47,7 @@ export class Puzzles {
   }
 
   get path() {
-    return ''
+    return this.m_path()
   }
 
   set i_current_puzzle(dt: number) {
@@ -55,6 +55,7 @@ export class Puzzles {
     owrite(this._i_current_puzzle, _ => (_ + dt + pz.length) % pz.length)
   }
 
+  m_path: Memo<Path | ''>
   m_root: Memo<Node>
 
   m_puzzles: Memo<Array<Puzzle>>
@@ -78,5 +79,10 @@ export class Puzzles {
     let m_fen = createMemo(() => this.m_current_puzzle().fen as Fen)
     let m_moves = createMemo(() => this.m_current_puzzle().moves.split(' ') as Array<UCI>)
     this.m_root = createMemo(() => TreeBuilder.apply(MobileSituation.from_fen(m_fen()), m_moves()))
+
+    this.m_path = createMemo(() => {
+      this.m_root()
+      return ''
+    })
   }
 }

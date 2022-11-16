@@ -29,7 +29,9 @@ export class _Chessanalysis23 {
   }
 
   get nodes() {
-    return FlatTree.apply(read(this._root))
+    return untrack(() => {
+      return FlatTree.apply(read(this._root))
+    })
   }
 
   on_nodes(doc: FlatDoc) {
