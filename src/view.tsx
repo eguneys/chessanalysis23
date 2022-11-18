@@ -23,7 +23,7 @@ const Chessanalysis23: Component<{}> = props => {
             <Chessidea23 on_rules={_ => puzzles.rules = _} fen={ctrl._idea_fen} on_fen={_ => ctrl._idea_fen = _}/>
           </TabPanel>
           <TabPanel>
-            <Chessideareplay23 on_path={_ => {}} on_nodes={_ => puzzles.node_rules = _} shapes={ctrl._replay_shapes} nodes={ctrl.nodes} path={ctrl.path} />
+            <Chessideareplay23 on_path={_ => {}} on_nodes={_ => ctrl.nodes = _} shapes={ctrl._replay_shapes} nodes={ctrl.nodes} path={ctrl.path} />
           </TabPanel>
         </Tabs>
       </div>
