@@ -89,7 +89,7 @@ export class Puzzles {
 
   m_gen: Memo<(_: MobileSituation) => Match>
   m_rules_gen_map: Memo<Array<string>>
-  m_rules_pos_map: Memo<Map<string, string>>
+  m_rules_pos_map: Memo<Map<Pos, string>>
 
 
   _idea_nodes: Signal<Node>
@@ -108,22 +108,10 @@ export class Puzzles {
       return read(_rules)[0].trim()
       .split('\n')
       .filter(_ => _ !== '')
-      .flatMap(_ => _.split(' ').map(_ => _.split('->').map(_ =>
-        _.replace('wk', 'k')
-        .replace('wq', 'q')
-        .replace('wn', 'n')
-        .replace('wb', 'b')
-        .replace('wr', 'r')
-        .replace('wp', 'p')
-        .replace('bk', 'K')
-        .replace('bq', 'Q')
-        .replace('bn', 'N')
-        .replace('bb', 'B')
-        .replace('br', 'R')
-        .replace('bp', 'P'))))
+      .flatMap(_ => _.split(' ').map(_ => _.split('->').map(symbol_convert)))
     })
 
-    this.m_rules_pos_map = createMemo(() => read(_rules)[1])
+    this.m_rules_pos_map = createMemo(() => new Map([...read(_rules)[1]].map(([k, v]) => [k, symbol_convert(v)])) as Map<Pos, string>)
 
     this.m_rules_gen_map = createMemo(() => {
       let rules = m_rules()
@@ -208,14 +196,51 @@ class MPuzzle {
       return undefined
     })
 
+    /*
+    match[0] ['f4', 'g6', 'd3'] 
+    m_rules_gen_map ['n_0', 'n_1', 'f_0'] 
+    m_rules_pos_map {'f3' => 'f_0', 'd6' => 'wn_0', 'e4' => 'wn_1'}
+   */
 
-    m_log(() => {
-      let match = this.m_match()
-      if (match) {
-        console.log(match[0], puzzles.m_rules_gen_map(), puzzles.m_rules_pos_map(), read(puzzles._idea_nodes))
+   let m_node_convert = createMemo(() => {
+     let node = read(puzzles._idea_nodes)
+     let matches = this.m_match()
+      if (matches) {
+        return matches.flatMap(_match0 => {
+          let pos_map = puzzles.m_rules_pos_map()
+          let gen_map = puzzles.m_rules_gen_map()
+
+          let convert_map = new Map<Pos, Pos>([...pos_map.entries()].map(([o, v]) => {
+            return [o, _match0[gen_map.indexOf(v)]]
+          }))
+
+          let res = TreeBuilder.uci_convert(node, convert_map)
+          if (res) {
+            return res
+          }
+          return []
+        })
       }
-    })
+      return undefined
+   })
+
+   m_log(m_node_convert)
 
   }
 
 }
+
+
+const symbol_convert = (_: string) =>
+_.replace('wk', 'k')
+.replace('wq', 'q')
+.replace('wn', 'n')
+.replace('wb', 'b')
+.replace('wr', 'r')
+.replace('wp', 'p')
+.replace('bk', 'K')
+.replace('bq', 'Q')
+.replace('bn', 'N')
+.replace('bb', 'B')
+.replace('br', 'R')
+.replace('bp', 'P')
