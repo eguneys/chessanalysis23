@@ -4,7 +4,7 @@ import { Shapes } from 'chessboard23'
 import { Memo, m_log, mread, read, write, owrite } from 'solid-play'
 import { Path, UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
 import { Rules } from 'chessidea23'
-import { IsoSituation, match_idea, Idea } from 'lchessanalysis'
+import { IsoSituation, gen_const, Idea } from 'lchessanalysis'
 
 export type Puzzle = {
   id: string,
@@ -94,10 +94,11 @@ export class Puzzles {
     this._rules = _rules
 
     let m_rules = createMemo(() => {
+      console.log(read(_rules))
       return read(_rules)[0].trim()
       .split('\n')
       .filter(_ => _ !== '')
-      .map(_ => _.split('->').map(_ =>
+      .flatMap(_ => _.split(' ').map(_ => _.split('->').map(_ =>
         _.replace('wk', 'k')
         .replace('wq', 'q')
         .replace('wn', 'n')
@@ -109,8 +110,7 @@ export class Puzzles {
         .replace('bn', 'N')
         .replace('bb', 'B')
         .replace('br', 'R')
-        .replace('bp', 'P')
-      ))
+        .replace('bp', 'P'))))
     })
 
     let r_puzzles = createResource(getPuzzles)
@@ -136,7 +136,7 @@ export class Puzzles {
 
 
     let m_node_fen = createMemo(() => this.m_root().children[0].fen)
-    let m_match = () => match_idea(IsoSituation.from_fen(m_node_fen()), MobileSituation.from_fen(m_node_fen()), m_rules())
+    let m_match = () => gen_const(m_rules())(MobileSituation.from_fen(m_node_fen()))
 
     createEffect(() => {
       read(this._match_now)
