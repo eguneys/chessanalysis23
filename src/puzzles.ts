@@ -94,7 +94,6 @@ export class Puzzles {
     this._rules = _rules
 
     let m_rules = createMemo(() => {
-      console.log(read(_rules))
       return read(_rules)[0].trim()
       .split('\n')
       .filter(_ => _ !== '')
