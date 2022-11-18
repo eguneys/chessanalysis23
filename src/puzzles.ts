@@ -136,6 +136,8 @@ export class Puzzles {
 
     this.m_gen = createMemo(() => gen_const(m_rules()))
 
+    // hack
+    this.m_current_puzzle = createMemo(() => undefined as any)
     let m_puzzles_ = createMemo(mapArray(m_puzzles, _ => new MPuzzle(this, _)))
 
     this.m_puzzles = createMemo(() => {
@@ -176,9 +178,8 @@ class MPuzzle {
     let moves = puzzle.moves.split(' ') as Array<UCI>
     let root = TreeBuilder.apply(MobileSituation.from_fen(fen), moves)
 
+    let node_path = root.children[0]?.id
     let node_fen = root.children[0]?.fen
-
-    this.m_nodes = createMemo(() => FlatTree.apply(root))
     this.m_path = createMemo(() => '')
 
     this.m_match = createMemo(() => {
@@ -203,6 +204,9 @@ class MPuzzle {
    */
 
    let m_node_convert = createMemo(() => {
+     if (puzzles.m_current_puzzle() !== this) {
+       return undefined
+     }
      let node = read(puzzles._idea_nodes)
      let matches = this.m_match()
       if (matches) {
@@ -214,7 +218,7 @@ class MPuzzle {
             return [o, _match0[gen_map.indexOf(v)]]
           }))
 
-          let res = TreeBuilder.uci_convert(node, convert_map)
+          let res = TreeBuilder.uci_convert(root, node_path!, node, convert_map)
           if (res) {
             return res
           }
@@ -224,7 +228,16 @@ class MPuzzle {
       return undefined
    })
 
-   m_log(m_node_convert)
+
+   this.m_nodes = createMemo(() => {
+     let n = m_node_convert()
+     if (n && n[0]) {
+       return FlatTree.apply(n[0])
+     } else {
+       return FlatTree.apply(root)
+     }
+   })
+
 
   }
 
