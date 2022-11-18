@@ -33,6 +33,7 @@ const Chessanalysis23: Component<{}> = props => {
             <button onClick={() => puzzles.i_current_puzzle = -1 }>prev</button>
             {puzzles.puzzle_text}
             <button onClick={() => puzzles.i_current_puzzle = 1 }>next</button>
+            <button onClick={() => puzzles.filter_matches()}>filter</button>
             <button onClick={() => puzzles.match()}>match</button>
           </div>
           <Chessideareplay23 on_path={_ => puzzles.path = _} on_nodes={_ => {}} shapes={""} nodes={puzzles.nodes} path={puzzles.path}/>

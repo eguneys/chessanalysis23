@@ -4,7 +4,9 @@ import { Shapes } from 'chessboard23'
 import { Memo, m_log, mread, read, write, owrite } from 'solid-play'
 import { Path, UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanalysis'
 import { Rules } from 'chessidea23'
-import { IsoSituation, gen_const, Idea } from 'lchessanalysis'
+import { Pos, IsoSituation, gen_const, Idea } from 'lchessanalysis'
+
+export type Match = Array<Array<Pos>>
 
 export type Puzzle = {
   id: string,
@@ -39,10 +41,6 @@ const getPuzzles = () => {
 
 export class Puzzles {
 
-  set node_rules(_: FlatDoc) {
-    owrite(this._node_rules, _)
-  }
-
   set rules(_: Rules) {
     owrite(this._rules, _)
   }
@@ -72,7 +70,12 @@ export class Puzzles {
     owrite(this._match_now, undefined)
   }
 
-  _node_rules: Signal<FlatDoc>
+  filter_matches() {
+    owrite(this._filter, _ => !_)
+  }
+
+  _filter: Signal<boolean>
+
   _rules: Signal<Rules>
   m_path: Memo<Path | ''>
   m_root: Memo<Node>
@@ -83,12 +86,13 @@ export class Puzzles {
 
   _match_now: Signal<undefined>
 
+  m_matches: Memo<Match | undefined>
+  m_matched_puzzles: Memo<Array<[Match, Puzzle]> | undefined>
+
   constructor() {
+    this._filter = createSignal(false)
 
     this._match_now = createSignal(undefined, { equals: false })
-
-    let _node_rules: Signal<FlatDoc> = createSignal(FlatTree.apply(Node.make_root(initial_fen)))
-    this._node_rules = _node_rules
 
     let _rules: Signal<Rules> = createSignal(['', new Map<string, string>()])
     this._rules = _rules
@@ -119,6 +123,47 @@ export class Puzzles {
       return puzzles || [default_puzzle]
     })
 
+    this.m_matches = createMemo(() => {
+      if (!read(this._filter)) {
+        return undefined
+      }
+      let i = untrack(() => gen_const(m_rules()))
+      let puzzles = this.m_puzzles()
+      return puzzles.map(_ => {
+          let root = TreeBuilder.apply(MobileSituation.from_fen(_.fen as Fen), _.moves.split(' ') as Array<UCI>)
+
+          let node_fen = root.children[0]?.fen
+
+          if (!node_fen) {
+            return undefined
+          }
+
+          let match = i(MobileSituation.from_fen(node_fen))
+
+          if (match.length > 0) {
+            return match
+          }
+          return undefined
+        })
+    })
+
+    this.m_matched_puzzles = createMemo(() => {
+      let matches = this.m_matches()
+      let puzzles = this.m_puzzles()
+
+      if (matches) {
+        return matches.flatMap((match, i) => {
+          if (match) {
+            return [[puzzles[i], match]]
+          }
+          return []
+        })
+      }
+      return undefined
+    })
+
+    m_log(this.m_matched_puzzles)
+
     this._i_current_puzzle = createSignal(0)
 
     this.m_current_puzzle = createMemo(() =>
@@ -147,4 +192,18 @@ export class Puzzles {
     })
 
   }
+}
+
+
+class MPuzzle {
+
+
+
+  constructor(readonly puzzles: Puzzles, readonly puzzle: Puzzle) {
+
+
+
+
+  }
+
 }
