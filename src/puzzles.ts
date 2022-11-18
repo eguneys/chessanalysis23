@@ -1,4 +1,4 @@
-import { createResource, createMemo, createEffect, batch, untrack, Signal, createSignal } from 'solid-js'
+import { mapArray, createResource, createMemo, createEffect, batch, untrack, Signal, createSignal } from 'solid-js'
 import { MobileSituation, Board, initial_fen } from 'lchessanalysis'
 import { Shapes } from 'chessboard23'
 import { Memo, m_log, mread, read, write, owrite } from 'solid-play'
@@ -49,13 +49,16 @@ export class Puzzles {
     return `${read(this._i_current_puzzle) + 1}/${this.m_puzzles().length}`
   }
   
+  set nodes(_: FlatDoc) {
+    owrite(this._idea_nodes, FlatTree.read(_))
+  }
 
   get nodes() {
-    return FlatTree.apply(this.m_root())
+    return this.m_current_puzzle().nodes
   }
 
   get path() {
-    return this.m_path()
+    return this.m_current_puzzle().path
   }
 
   set path(path: Path | '') {
@@ -77,17 +80,19 @@ export class Puzzles {
   _filter: Signal<boolean>
 
   _rules: Signal<Rules>
-  m_path: Memo<Path | ''>
-  m_root: Memo<Node>
 
-  m_puzzles: Memo<Array<Puzzle>>
+  m_puzzles: Memo<Array<MPuzzle>>
   _i_current_puzzle: Signal<number>
-  m_current_puzzle: Memo<Puzzle>
+  m_current_puzzle: Memo<MPuzzle>
 
   _match_now: Signal<undefined>
 
-  m_matches: Memo<Match | undefined>
-  m_matched_puzzles: Memo<Array<[Match, Puzzle]> | undefined>
+  m_gen: Memo<(_: MobileSituation) => Match>
+  m_rules_gen_map: Memo<Array<string>>
+  m_rules_pos_map: Memo<Map<string, string>>
+
+
+  _idea_nodes: Signal<Node>
 
   constructor() {
     this._filter = createSignal(false)
@@ -96,6 +101,8 @@ export class Puzzles {
 
     let _rules: Signal<Rules> = createSignal(['', new Map<string, string>()])
     this._rules = _rules
+
+    this._idea_nodes = createSignal(TreeBuilder.apply(MobileSituation.from_fen(initial_fen), []))
 
     let m_rules = createMemo(() => {
       return read(_rules)[0].trim()
@@ -116,81 +123,46 @@ export class Puzzles {
         .replace('bp', 'P'))))
     })
 
+    this.m_rules_pos_map = createMemo(() => read(_rules)[1])
+
+    this.m_rules_gen_map = createMemo(() => {
+      let rules = m_rules()
+      let res: Array<string> = []
+
+      rules.forEach(_ => _.forEach(_ => {
+        if (!res.includes(_)) {
+          res.push(_)
+        }
+      }))
+
+      return res
+    })
+
     let r_puzzles = createResource(getPuzzles)
 
-    this.m_puzzles = createMemo(() => {
+    let m_puzzles = createMemo(() => {
       let puzzles = mread(r_puzzles)
       return puzzles || [default_puzzle]
     })
 
-    this.m_matches = createMemo(() => {
-      if (!read(this._filter)) {
-        return undefined
+
+    this.m_gen = createMemo(() => gen_const(m_rules()))
+
+    let m_puzzles_ = createMemo(mapArray(m_puzzles, _ => new MPuzzle(this, _)))
+
+    this.m_puzzles = createMemo(() => {
+      let res = m_puzzles_().filter(_ => (!read(this._filter)) || _.m_match())
+
+      if (res.length === 0) {
+        return m_puzzles_().slice(0, 1)
       }
-      let i = untrack(() => gen_const(m_rules()))
-      let puzzles = this.m_puzzles()
-      return puzzles.map(_ => {
-          let root = TreeBuilder.apply(MobileSituation.from_fen(_.fen as Fen), _.moves.split(' ') as Array<UCI>)
-
-          let node_fen = root.children[0]?.fen
-
-          if (!node_fen) {
-            return undefined
-          }
-
-          let match = i(MobileSituation.from_fen(node_fen))
-
-          if (match.length > 0) {
-            return match
-          }
-          return undefined
-        })
+      return res
     })
-
-    this.m_matched_puzzles = createMemo(() => {
-      let matches = this.m_matches()
-      let puzzles = this.m_puzzles()
-
-      if (matches) {
-        return matches.flatMap((match, i) => {
-          if (match) {
-            return [[puzzles[i], match]]
-          }
-          return []
-        })
-      }
-      return undefined
-    })
-
-    m_log(this.m_matched_puzzles)
 
     this._i_current_puzzle = createSignal(0)
 
     this.m_current_puzzle = createMemo(() =>
       this.m_puzzles()[read(this._i_current_puzzle)])
-
-    let m_fen = createMemo(() => this.m_current_puzzle().fen as Fen)
-    let m_moves = createMemo(() => this.m_current_puzzle().moves.split(' ') as Array<UCI>)
-    this.m_root = createMemo(() => TreeBuilder.apply(MobileSituation.from_fen(m_fen()), m_moves()))
-
-    this.m_path = createMemo(() => {
-      this.m_root()
-      return ''
-    })
-
-
-    let m_node_fen = createMemo(() => this.m_root().children[0].fen)
-    let m_match = () => gen_const(m_rules())(MobileSituation.from_fen(m_node_fen()))
-
-    createEffect(() => {
-      read(this._match_now)
-      untrack(() => {
-        console.log(m_rules())
-        console.log(m_node_fen())
-        console.log(m_match())
-      })
-    })
-
   }
 }
 
@@ -198,11 +170,51 @@ export class Puzzles {
 class MPuzzle {
 
 
+  get nodes() {
+    return this.m_nodes()
+  }
+
+  get path() {
+    return this.m_path()
+  }
+
+  m_nodes: Memo<FlatDoc>
+  m_path: Memo<Path | ''>
+  m_match: Memo<Match | undefined>
 
   constructor(readonly puzzles: Puzzles, readonly puzzle: Puzzle) {
 
+    let fen = puzzle.fen as Fen
+    let moves = puzzle.moves.split(' ') as Array<UCI>
+    let root = TreeBuilder.apply(MobileSituation.from_fen(fen), moves)
+
+    let node_fen = root.children[0]?.fen
+
+    this.m_nodes = createMemo(() => FlatTree.apply(root))
+    this.m_path = createMemo(() => '')
+
+    this.m_match = createMemo(() => {
+      if (!node_fen) {
+        return undefined
+      }
+      let match_gen = read(puzzles._filter) && puzzles.m_gen()
+      if (match_gen) {
+        let match = match_gen(MobileSituation.from_fen(node_fen))
+
+        if (match.length > 0) {
+          return match
+        }
+      }
+      return undefined
+    })
 
 
+    m_log(() => {
+      let match = this.m_match()
+      if (match) {
+        console.log(match[0], puzzles.m_rules_gen_map(), puzzles.m_rules_pos_map(), read(puzzles._idea_nodes))
+      }
+    })
 
   }
 
