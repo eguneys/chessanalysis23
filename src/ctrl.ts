@@ -7,16 +7,17 @@ import { Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 'lchessanal
 export class _Chessanalysis23 {
 
   set _idea_fen(_: string) {
-    let [fen, circles] = _.split('__fen_circles__')
+    let [fen, circles, shapes, i_piece] = _.split('__fen_circles__')
     owrite(this._initial_fen, fen + ' w KQkq -' as Fen)
     owrite(this._circles, Shapes.from_fen(circles.trim()))
+    console.log(shapes, i_piece)
   }
 
   get _idea_fen() {
     return untrack(() => {
       let fen = MobileSituation.from_fen(read(this._initial_fen)).board.fen
       let circles = read(this._circles).fen
-      return `${fen}__fen_circles__${circles.trim()}`
+      return [fen, circles, '', '0'].join(`__fen_circles__`)
     })
   }
 
