@@ -45,6 +45,10 @@ export class Puzzles {
     owrite(this._rules, _)
   }
 
+  get current_puzzle() {
+    return this.m_current_puzzle()
+  }
+
   get puzzle_text() {
     return `${read(this._i_current_puzzle) + 1}/${this.m_puzzles().length}`
   }
@@ -168,12 +172,14 @@ class MPuzzle {
     return this.m_path()
   }
 
+  id: string
   m_nodes: Memo<FlatDoc>
   m_path: Memo<Path | ''>
   m_match: Memo<Match | undefined>
 
   constructor(readonly puzzles: Puzzles, readonly puzzle: Puzzle) {
 
+    this.id = puzzle.id
     let fen = puzzle.fen as Fen
     let moves = puzzle.moves.split(' ') as Array<UCI>
     let root = TreeBuilder.apply(MobileSituation.from_fen(fen), moves)
@@ -186,7 +192,7 @@ class MPuzzle {
       if (!node_fen) {
         return undefined
       }
-      let match_gen = read(puzzles._filter) && puzzles.m_gen()
+      let match_gen = read(puzzles._filter) && untrack(() => puzzles.m_gen())
       if (match_gen) {
         let match = match_gen(MobileSituation.from_fen(node_fen))
 
@@ -224,6 +230,11 @@ class MPuzzle {
             return [o, _match0[gen_map.indexOf(v)]]
           }))
 
+
+          if (puzzle.id === '01MPw') {
+            console.log(pos_map, gen_map, convert_map)
+            console.log('hey')
+          }
           let res = TreeBuilder.uci_convert(root, node_path!, node, convert_map)
           if (res) {
             return res

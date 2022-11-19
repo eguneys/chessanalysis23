@@ -33,6 +33,7 @@ const Chessanalysis23: Component<{}> = props => {
       <h3> Puzzles </h3>
       <div class='puzzles'> 
           <div class='buttons'>
+          <span>{puzzles.current_puzzle.id}</span>
             <button onClick={() => puzzles.i_current_puzzle = -1 }>prev</button>
             {puzzles.puzzle_text}
             <button onClick={() => puzzles.i_current_puzzle = 1 }>next</button>
