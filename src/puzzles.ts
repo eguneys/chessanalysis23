@@ -207,7 +207,13 @@ class MPuzzle {
      if (puzzles.m_current_puzzle() !== this) {
        return undefined
      }
-     let node = read(puzzles._idea_nodes)
+     let node = read(puzzles._idea_nodes).map_comments(_ => {
+       if (_.comment) {
+         return `__bot__ ${_.comment}`
+       } else {
+         return `__bot__`
+       }
+     })
      let matches = this.m_match()
       if (matches) {
         return matches.flatMap(_match0 => {
