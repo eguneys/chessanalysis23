@@ -32,16 +32,20 @@ export class Puzzle {
 }
 
 
+export type AnalyseMakeInfo = {
+  gen: (_: MobileSituation) => Match, 
+  gen_map: Array<string>, 
+  pos_map: Map<Pos, string>,
+  idea_nodes: Node
+}
 
 export class AnalysePuzzle {
  
   static make = (
-    gen: (_: MobileSituation) => Match, 
-    gen_map: Array<string>, 
-    pos_map: Map<Pos, string>,
-    idea_nodes: Node,
+    analyse_make_info: AnalyseMakeInfo,
     puzzle: Puzzle) => {
 
+      let { gen, gen_map, pos_map, idea_nodes } = analyse_make_info
 
       let matches = gen(MobileSituation.from_fen(puzzle.node.fen))
 
