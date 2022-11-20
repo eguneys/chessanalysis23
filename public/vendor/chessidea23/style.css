@@ -1,5 +1,5 @@
 .chessidea23 {
-  display: flex;
+  display: inline-flex;
   user-select: none;
   cursor: pointer;
 }

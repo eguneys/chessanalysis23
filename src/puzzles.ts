@@ -6,8 +6,8 @@ import { Path, UCI, Fen, empty_fen, TreeBuilder, Node, FlatTree, FlatDoc } from 
 import { Rules } from 'chessidea23'
 import { Pos, IsoSituation, gen_const, Idea } from 'lchessanalysis'
 
-export type Match = Array<Array<Pos>>
 
+type Match = Array<Array<Pos>>
 export type Puzzle = {
   id: string,
   fen: string,

@@ -1,4 +1,23 @@
+body {
+  height: 100vh;
+}
+
+#app {
+  height: 100%;
+}
+
 .chessanalysis23 {
+  width: 100%;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+
+.ideas,
+.puzzles {
+  width: 100%;
+  flex: 1;
+  height: 0;
 }
 
 h3 {
@@ -6,17 +25,23 @@ h3 {
   margin: 0;
 }
 
-.ideas {
+.ideas, .puzzles {
   display: flex;
   flex-flow:row;
+  justify-content: center;
 }
 
-.puzzles {
+.ideas .tabs,
+.puzzles .tabs {
+  width: 80%;
+}
+
+.puzzles_in {
   display: flex;
   flex-flow: column;
 }
 
-.puzzles .buttons {
+.puzzles_in .buttons {
   align-self: flex-end;
 }
 
@@ -26,7 +51,7 @@ h3 {
 
 .board-wrap {
   position: relative;
-  width: 300px;
+  width: 260px;
 }
 
 .replay-wrap {
